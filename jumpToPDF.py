@@ -10,12 +10,12 @@ else:
 	from . import getTeXRoot
 
 
-import sublime_plugin, os.path, subprocess, time
+import sublime_plugin, os.path, subprocess, time, re, codecs
 
 # Jump to current line in PDF file
 # NOTE: must be called with {"from_keybinding": <boolean>} as arg
 
-class jump_to_pdfCommand(sublime_plugin.TextCommand):
+class jump_to_tools_pdfCommand(sublime_plugin.TextCommand):
 	def run(self, edit, **args):
 		# Check prefs for PDF focus and sync
 		s = sublime.load_settings("LaTeXTools.sublime-settings")
@@ -47,9 +47,19 @@ class jump_to_pdfCommand(sublime_plugin.TextCommand):
 		root = getTeXRoot.get_tex_root(self.view)
 		print ("!TEX root = ", repr(root) ) # need something better here, but this works.
 		rootName, rootExt = os.path.splitext(root)
-		pdffile = rootName + u'.pdf'
+		out_dir=""
+		file_lines=codecs.open(root, "r", "UTF-8", "ignore").readlines()
+		if file_lines[1].startswith('%?'):
+			print(file_lines[1])
+			outs=re.match(r"%\?([a-z0-9]+)\s*$", file_lines[1])
+			print("outs"+outs.group(1))
+			if outs:
+				self.out_setting=outs.group(1)
+				out_dir=s.get("output").get(self.out_setting, "bin")+"/"
+				print("\nout_set: "+out_dir+"\n")
+		pdffile = os.path.dirname(root) + "/" + out_dir + os.path.basename(rootName) + '.pdf'
 		(line, col) = self.view.rowcol(self.view.sel()[0].end())
-		print ("Jump to: ", line,col)
+		print ("Jump to: ", line,col, pdffile)
 		# column is actually ignored up to 0.94
 		# HACK? It seems we get better results incrementing line
 		line += 1

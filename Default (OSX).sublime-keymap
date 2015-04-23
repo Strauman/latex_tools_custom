@@ -79,7 +79,7 @@ LaTeX Package keymap for OS X
 	{ 	"keys": ["super+l","j"], 
 		"context":  [
 			{"key": "selector", "operator": "equal", "operand": "text.tex.latex"}],
-		"command": "jump_to_pdf", "args": {"from_keybinding": true}},
+		"command": "jump_to_tools_pdf", "args": {"from_keybinding": true}},
 	{ 	"keys": ["super+l","t","f"],
 		"context":  [
 			{"key": "selector", "operator": "equal", "operand": "text.tex.latex"}],

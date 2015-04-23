@@ -15,7 +15,7 @@ LaTeX Package keymap for Linux
 	/* alternatives: the second is reminiscent of super+B for build */
 	{ "keys": ["ctrl+alt+v"], "command": "view_pdf"},
 	{ "keys": ["ctrl+alt+r"], "command": "tex_ref"},
-	{ "keys": ["super+shift+j"], "command": "jump_to_pdf"},
+	{ "keys": ["super+shift+j"], "command": "jump_to_tools_pdf"},
 	{ "keys": ["super+shift+b"], "command": "view_pdf"},
 
 		// Auto-pair ``$''

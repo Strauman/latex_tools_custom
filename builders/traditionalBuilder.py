@@ -16,8 +16,10 @@ import codecs
 DEBUG = False
 
 DEFAULT_COMMAND_LATEXMK = ["latexmk", "-cd",
-				"-e", "$pdflatex = '%E -interaction=nonstopmode -synctex=1 %S %O'",
-				"-f", "-pdf"]
+				"-e", "$pdflatex = '%E -interaction=nonstopmode -synctex=1 -aux-directory=%F -output-directory=%F %S %O'",
+				"-f", "-pdf", "-aux-directory=%F"]
+
+DEFAULT_CLEAN_COMMAND = ["latexmk", "-c %F"]
 
 DEFAULT_COMMAND_WINDOWS_MIKTEX = ["texify", 
 					"-b", "-p", "--engine=%E",
@@ -32,7 +34,9 @@ DEFAULT_COMMAND_WINDOWS_MIKTEX = ["texify",
 #
 class TraditionalBuilder(PdfBuilder):
 
-	def __init__(self, tex_root, output, builder_settings, platform_settings):
+	def __init__(self, tex_root, output, builder_settings, platform_settings, tool_settings):
+		self.out_setting=False
+		self.output_settings=tool_settings.get("output")
 		# Sets the file name parts, plus internal stuff
 		super(TraditionalBuilder, self).__init__(tex_root, output, builder_settings, platform_settings) 
 		# Now do our own initialization: set our name
@@ -73,7 +77,17 @@ class TraditionalBuilder(PdfBuilder):
 		# See if the root file specifies a custom engine
 		engine = self.engine
 		cmd = self.cmd[:] # Warning! If I omit the [:], cmd points to self.cmd!
-		for line in codecs.open(self.tex_root, "r", "UTF-8", "ignore").readlines():
+		file_lines=codecs.open(self.tex_root, "r", "UTF-8", "ignore").readlines()
+		if file_lines[1].startswith('%?'):
+			print(file_lines[1])
+			outs=re.match(r"%\?([a-z0-9]+)\s*$", file_lines[1])
+			print("outs"+outs.group(1))
+			if outs:
+				self.out_setting=outs.group(1)
+				out_dir=self.output_settings.get(self.out_setting, "bin")
+				print("\nout_set: "+self.out_setting+"\n")
+
+		for line in file_lines:
 			if not line.startswith('%'):
 				break
 			else:
@@ -101,9 +115,19 @@ class TraditionalBuilder(PdfBuilder):
 			
 		cmd[3] = cmd[3].replace("%E", engine)
 
+		
+		cmd[3] = cmd[3].replace("%F", out_dir)
+		cmd[6] = cmd[6].replace("%F", out_dir)
 		# texify wants the .tex extension; latexmk doesn't care either way
 		yield (cmd + [self.tex_name], "Invoking " + cmd[0] + "... ")
-
+		if (self.output_settings.get("auto_clean", True)):
+			clcmd=DEFAULT_CLEAN_COMMAND[:]
+			for tmproot, dirs, files in os.walk(out_dir):
+				for currentFile in files:
+					temp_exts = ('.blg','.bbl','.aux','.log','.brf','.nlo','.out','.dvi','.ps','.lof','.toc','.fls','.fdb_latexmk','.pdfsync','.synctex.gz','.ind','.ilg','.idx')
+					if any(currentFile.lower().endswith(ext) for ext in temp_exts):
+						os.remove(os.path.join(tmproot, currentFile))
+			
 		self.display("done.\n")
 		
 		# This is for debugging purposes 

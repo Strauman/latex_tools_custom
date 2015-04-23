@@ -17,7 +17,7 @@ LaTeX Package keymap for OSX
 	{ "keys": ["ctrl+alt+v"], "command": "view_pdf"},
 	// subsumed by ref<TAB> and completion API
 	// { "keys": ["ctrl+alt+r"], "command": "tex_ref"},
-	{ "keys": ["alt+shift+j"], "command": "jump_to_pdf"},
+	{ "keys": ["alt+shift+j"], "command": "jump_to_tools_pdf"},
 	{ "keys": ["super+shift+b"], "command": "view_pdf"},
 	{ "keys": ["super+shift+f"], "command": "toggle_focus"},
 

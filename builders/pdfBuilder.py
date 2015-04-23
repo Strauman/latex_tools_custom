@@ -43,6 +43,7 @@ class PdfBuilder(object):
 		self.out = ""
 		self.builder_settings = builder_settings
 		self.platform_settings = platform_settings
+		
 
 	# Send to callable object
 	# Usually no need to override

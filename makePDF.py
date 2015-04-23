@@ -161,6 +161,8 @@ class CmdThread ( threading.Thread ):
 		
 		# Note to self: need to think whether we don't want to codecs.open this, too...
 		# Also, we may want to move part of this logic to the builder...
+		if not os.path.isfile(self.caller.tex_base + ".log"):
+			file=open(self.caller.tex_base + ".log", 'w+')
 		data = open(self.caller.tex_base + ".log", 'rb').read()		
 
 		errors = []
@@ -235,7 +237,7 @@ class make_pdfCommand(sublime_plugin.WindowCommand):
 		# self.output_view.settings().set("result_line_regex", line_regex)
 		self.output_view.settings().set("result_base_dir", tex_dir)
 
-		self.window.run_command("show_panel", {"panel": "output.exec"})
+		self.window.run_command("show_panel", {"panel": "output.exec"}) # TODO REINSTATE
 		
 		self.output_view.settings().set("result_file_regex", file_regex)
 
@@ -316,7 +318,7 @@ class make_pdfCommand(sublime_plugin.WindowCommand):
 		builder_class = getattr(builder_module, builder_class_name)
 		print(repr(builder_class))
 		# We should now be able to construct the builder object
-		self.builder = builder_class(self.file_name, self.output, builder_settings, platform_settings)
+		self.builder = builder_class(self.file_name, self.output, builder_settings, platform_settings, sublime.load_settings("LaTeXTools.sublime-settings"))
 		
 		# Restore Python system path
 		sys.path[:] = syspath_save
@@ -392,7 +394,7 @@ class make_pdfCommand(sublime_plugin.WindowCommand):
 		# self.output_view.end_edit(edit)
 		self.output_view.run_command("do_finish_edit")
 		if can_switch_to_pdf:
-			self.window.active_view().run_command("jump_to_pdf", {"from_keybinding": False})
+			self.window.active_view().run_command("jump_to_tools_pdf", {"from_keybinding": False})
 
 
 class DoOutputEditCommand(sublime_plugin.TextCommand):

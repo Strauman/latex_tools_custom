@@ -9,9 +9,9 @@ else:
 	_ST3 = True
 	from . import getTeXRoot
 
-import sublime_plugin, os, os.path, platform
+import sublime_plugin, os, os.path, platform, re
 from subprocess import Popen
-
+import codecs
 
 # View PDF file corresonding to TEX file in current buffer
 # Assumes that the SumatraPDF viewer is used (great for inverse search!)
@@ -31,9 +31,19 @@ class View_pdfCommand(sublime_plugin.WindowCommand):
 			return
 		quotes = ""# \"" MUST CHECK WHETHER WE NEED QUOTES ON WINDOWS!!!
 		root = getTeXRoot.get_tex_root(view)
+		out_dir=""
+		file_lines=codecs.open(root, "r", "UTF-8", "ignore").readlines()
+		if file_lines[1].startswith('%?'):
+			print(file_lines[1])
+			outs=re.match(r"%\?([a-z0-9]+)\s*$", file_lines[1])
+			print("outs"+outs.group(1))
+			if outs:
+				self.out_setting=outs.group(1)
+				out_dir=s.get("output").get(self.out_setting, "bin")+"/"
+				print("\nout_set: "+out_dir+"\n")
 
 		rootFile, rootExt = os.path.splitext(root)
-		pdfFile = quotes + rootFile + '.pdf' + quotes
+		pdfFile = quotes + os.path.dirname(root) + "/" + out_dir + os.path.basename(rootFile) + '.pdf' + quotes
 		s = platform.system()
 		script_path = None
 		if s == "Darwin":
