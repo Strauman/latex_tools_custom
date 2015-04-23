@@ -78,6 +78,7 @@ class TraditionalBuilder(PdfBuilder):
 		engine = self.engine
 		cmd = self.cmd[:] # Warning! If I omit the [:], cmd points to self.cmd!
 		file_lines=codecs.open(self.tex_root, "r", "UTF-8", "ignore").readlines()
+		out_dir=""
 		if file_lines[1].startswith('%?'):
 			print(file_lines[1])
 			outs=re.match(r"%\?([a-z0-9]+)\s*$", file_lines[1])
