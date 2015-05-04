@@ -293,7 +293,7 @@ class make_pdfCommand(sublime_plugin.WindowCommand):
 			builder_path = None
 
 		# Now actually get the builder
-		ltt_path = os.path.join(sublime.packages_path(),'LaTeXTools','builders')
+		ltt_path = os.path.join(sublime.packages_path(),'latex_tools_custom','builders')
 		if builder_path:
 			bld_path = os.path.join(sublime.packages_path(), builder_path)
 		else:
@@ -387,9 +387,7 @@ class make_pdfCommand(sublime_plugin.WindowCommand):
 	# Also from exec.py
 	# Set the selection to the start of the output panel, so next_result works
 	# Then run viewer
-
 	def finish(self, can_switch_to_pdf):
-		# sublime.status_message("Building complete")
 		sublime.set_timeout(functools.partial(self.do_finish, can_switch_to_pdf), 0)
 
 	def do_finish(self, can_switch_to_pdf):
@@ -401,6 +399,7 @@ class make_pdfCommand(sublime_plugin.WindowCommand):
 		# self.output_view.show(reg) # scroll to top
 		# self.output_view.end_edit(edit)
 		self.output_view.run_command("do_finish_edit")
+		# sublime.status_message("Building complete")
 		if can_switch_to_pdf:
 			self.window.active_view().run_command("jump_to_tools_pdf", {"from_keybinding": False})
 
