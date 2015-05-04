@@ -47,7 +47,7 @@ class jump_to_tools_pdfCommand(sublime_plugin.TextCommand):
 		root = getTeXRoot.get_tex_root(self.view)
 		print ("!TEX root = ", repr(root) ) # need something better here, but this works.
 		rootName, rootExt = os.path.splitext(root)
-		out_dir=""
+		out_dir="bin/"
 		file_lines=codecs.open(root, "r", "UTF-8", "ignore").readlines()
 		if file_lines[1].startswith('%?'):
 			print(file_lines[1])
@@ -78,8 +78,9 @@ class jump_to_tools_pdfCommand(sublime_plugin.TextCommand):
 					path_to_skim = subprocess.check_output(
 						['osascript', '-e', 'POSIX path of (path to app id "net.sourceforge.skim-app.skim")']
 					).decode("utf8")[:-1]
-				subprocess.Popen([os.path.join(path_to_skim, "Contents/SharedSupport/displayline")] + 
-								  options + [str(line), pdffile, srcfile])
+				jump_cmd=[os.path.join(path_to_skim, "Contents/SharedSupport/displayline")] + options + [str(line), pdffile, srcfile]
+				print(jump_cmd)
+				subprocess.Popen(jump_cmd)
 			else:
 				skim = os.path.join(sublime.packages_path(),
 								'LaTeXTools', 'skim', 'displayfile')

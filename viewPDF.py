@@ -31,7 +31,7 @@ class View_pdfCommand(sublime_plugin.WindowCommand):
 			return
 		quotes = ""# \"" MUST CHECK WHETHER WE NEED QUOTES ON WINDOWS!!!
 		root = getTeXRoot.get_tex_root(view)
-		out_dir=""
+		out_dir="bin/"
 		file_lines=codecs.open(root, "r", "UTF-8", "ignore").readlines()
 		if file_lines[1].startswith('%?'):
 			print(file_lines[1])

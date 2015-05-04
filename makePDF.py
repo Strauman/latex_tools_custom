@@ -161,10 +161,12 @@ class CmdThread ( threading.Thread ):
 		
 		# Note to self: need to think whether we don't want to codecs.open this, too...
 		# Also, we may want to move part of this logic to the builder...
-		if not os.path.isfile(self.caller.tex_base + ".log"):
-			file=open(self.caller.tex_base + ".log", 'w+')
-		data = open(self.caller.tex_base + ".log", 'rb').read()		
-
+		# if not os.path.isfile(self.caller.tex_base + ".log"):
+		# 	file=open(self.caller.tex_base + ".log", 'w+')
+		out_dir=self.caller.builder.out_dir
+		tex_base=self.caller.tex_base
+		data = open(os.path.dirname(tex_base) + "/" + out_dir + "/" + os.path.basename(tex_base) + ".log", 'rb').read()		
+		
 		errors = []
 		warnings = []
 
@@ -172,6 +174,7 @@ class CmdThread ( threading.Thread ):
 			(errors, warnings) = parseTeXlog.parse_tex_log(data)
 			content = [""]
 			if errors:
+				self.caller.show_console()
 				content.append("Errors:") 
 				content.append("")
 				content.extend(errors)
@@ -198,6 +201,7 @@ class CmdThread ( threading.Thread ):
 		self.caller.output(content)
 		self.caller.output("\n\n[Done!]\n")
 		self.caller.finish(len(errors) == 0)
+		# self.caller.finish(1)
 
 
 # Actual Command
@@ -205,7 +209,7 @@ class CmdThread ( threading.Thread ):
 class make_pdfCommand(sublime_plugin.WindowCommand):
 
 	def run(self, cmd="", file_regex="", path=""):
-		
+		sublime.status_message("Starting build")
 		# Try to handle killing
 		if hasattr(self, 'proc') and self.proc: # if we are running, try to kill running process
 			self.output("\n\n### Got request to terminate compilation ###")
@@ -237,7 +241,7 @@ class make_pdfCommand(sublime_plugin.WindowCommand):
 		# self.output_view.settings().set("result_line_regex", line_regex)
 		self.output_view.settings().set("result_base_dir", tex_dir)
 
-		self.window.run_command("show_panel", {"panel": "output.exec"}) # TODO REINSTATE
+		# self.window.run_command("show_panel", {"panel": "output.exec"}) # TODO REINSTATE
 		
 		self.output_view.settings().set("result_file_regex", file_regex)
 
@@ -334,7 +338,10 @@ class make_pdfCommand(sublime_plugin.WindowCommand):
 	# Threading headaches :-)
 	# The following function is what gets called from CmdThread; in turn,
 	# this spawns append_data, but on the main thread.
-
+	def show_console_(self):
+		self.window.run_command("show_panel", {"panel": "output.exec"})
+	def show_console(self):
+		sublime.set_timeout(functools.partial(self.show_console_), 0)
 	def output(self, data):
 		sublime.set_timeout(functools.partial(self.do_output, data), 0)
 
@@ -382,6 +389,7 @@ class make_pdfCommand(sublime_plugin.WindowCommand):
 	# Then run viewer
 
 	def finish(self, can_switch_to_pdf):
+		# sublime.status_message("Building complete")
 		sublime.set_timeout(functools.partial(self.do_finish, can_switch_to_pdf), 0)
 
 	def do_finish(self, can_switch_to_pdf):

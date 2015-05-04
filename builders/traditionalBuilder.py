@@ -78,7 +78,7 @@ class TraditionalBuilder(PdfBuilder):
 		engine = self.engine
 		cmd = self.cmd[:] # Warning! If I omit the [:], cmd points to self.cmd!
 		file_lines=codecs.open(self.tex_root, "r", "UTF-8", "ignore").readlines()
-		out_dir=""
+		out_dir="bin"
 		if file_lines[1].startswith('%?'):
 			print(file_lines[1])
 			outs=re.match(r"%\?([a-z0-9]+)\s*$", file_lines[1])
@@ -87,7 +87,7 @@ class TraditionalBuilder(PdfBuilder):
 				self.out_setting=outs.group(1)
 				out_dir=self.output_settings.get(self.out_setting, "bin")
 				print("\nout_set: "+self.out_setting+"\n")
-
+		self.out_dir=out_dir
 		for line in file_lines:
 			if not line.startswith('%'):
 				break
@@ -125,11 +125,13 @@ class TraditionalBuilder(PdfBuilder):
 			clcmd=DEFAULT_CLEAN_COMMAND[:]
 			for tmproot, dirs, files in os.walk(out_dir):
 				for currentFile in files:
-					temp_exts = ('.blg','.bbl','.aux','.log','.brf','.nlo','.out','.dvi','.ps','.lof','.toc','.fls','.fdb_latexmk','.pdfsync','.synctex.gz','.ind','.ilg','.idx')
+					temp_exts = ('.blg','.bbl','.aux','.brf','.nlo','.out','.dvi','.ps','.lof','.toc','.fls','.fdb_latexmk','.pdfsync','.ind','.ilg','.idx')
+					#'.synctex.gz'
 					if any(currentFile.lower().endswith(ext) for ext in temp_exts):
 						os.remove(os.path.join(tmproot, currentFile))
 			
 		self.display("done.\n")
+		self.display("built in "+out_dir+"\n")
 		
 		# This is for debugging purposes 
 		if self.display_log:
