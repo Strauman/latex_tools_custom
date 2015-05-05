@@ -18,7 +18,7 @@ import os, os.path
 import threading
 import functools
 import subprocess
-import types
+import types 
 import re
 import codecs
 
@@ -209,7 +209,10 @@ class CmdThread ( threading.Thread ):
 class make_pdfCommand(sublime_plugin.WindowCommand):
 
 	def run(self, cmd="", file_regex="", path=""):
-		sublime.status_message("Starting build")
+		# im = Image.open("/test.jpeg")
+		# im.show()
+		# sublime.status_message("Starting build")
+		self.window.active_view().set_status("texbuild", "Building...")
 		# Try to handle killing
 		if hasattr(self, 'proc') and self.proc: # if we are running, try to kill running process
 			self.output("\n\n### Got request to terminate compilation ###")
@@ -389,6 +392,8 @@ class make_pdfCommand(sublime_plugin.WindowCommand):
 	# Then run viewer
 	def finish(self, can_switch_to_pdf):
 		sublime.set_timeout(functools.partial(self.do_finish, can_switch_to_pdf), 0)
+	def clear_status(self, key):
+		self.window.active_view().erase_status("texbuild")
 
 	def do_finish(self, can_switch_to_pdf):
 		# Move to TextCommand for compatibility with ST3
@@ -399,7 +404,9 @@ class make_pdfCommand(sublime_plugin.WindowCommand):
 		# self.output_view.show(reg) # scroll to top
 		# self.output_view.end_edit(edit)
 		self.output_view.run_command("do_finish_edit")
-		sublime.status_message("Building complete")
+		# sublime.status_message("Building complete")
+		self.window.active_view().set_status("texbuild", "Building complete!")
+		sublime.set_timeout(functools.partial(self.clear_status, "texbuild"), 1500)
 		if can_switch_to_pdf:
 			self.window.active_view().run_command("jump_to_tools_pdf", {"from_keybinding": False})
 
