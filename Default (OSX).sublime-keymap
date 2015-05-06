@@ -11,7 +11,7 @@ LaTeX Package keymap for OS X
 	// The andreas way
 	{ "keys": ["super+shift+m"], 
   	"command": "insert_snippet", 
-  	"args": { "name": "Packages/User/Wrap in mmode.sublime-snippet" } },
+  	"args": { "name": "Packages/latex_tools_custom/Wrap in mmode.sublime-snippet" } },
 	// Reassign expand_selection to ctrl+l, ctrl+l
 	{ 	"keys": ["super+l","super+l"], 
 		"context":  [
