@@ -8,7 +8,10 @@ LaTeX Package keymap for OS X
 	// "cmd+l","cmd+l"
 	// However, keybindings are scoped to the text.tex.latex selector, so they do not
 	// pollute the standard bindings
-
+	// The andreas way
+	{ "keys": ["super+shift+m"], 
+  	"command": "insert_snippet", 
+  	"args": { "name": "Packages/User/Wrap in mmode.sublime-snippet" } },
 	// Reassign expand_selection to ctrl+l, ctrl+l
 	{ 	"keys": ["super+l","super+l"], 
 		"context":  [
