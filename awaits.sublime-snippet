@@ -1,0 +1,5 @@
+<snippet>
+	<content><![CDATA[\awaits{$1}]]></content>
+	<tabTrigger>w</tabTrigger>
+	<scope>text.tex.latex</scope>
+</snippet>

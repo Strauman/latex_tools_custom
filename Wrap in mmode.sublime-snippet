@@ -1,6 +1,6 @@
 <snippet>
 	<description>Wrap selection in math mode</description>
-	<content><![CDATA[\[${1:$SELECTION}\]]]></content>
+	<content><![CDATA[\[ ${1:$SELECTION} \]]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
 	<tabTrigger>mm</tabTrigger>
 	<scope>text.tex.latex</scope>
