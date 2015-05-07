@@ -1,9 +1,4 @@
-{
-	"schema_version": "3.0.0",
-
-	// All repositories must be an HTTPS URL. SSL certificates help prevent
-	// unauthorized code being loaded onto users' machines.
-	"repositories": [
+{"repositories": [
 		"https://github.com/Strauman/jquery.hotkeys"
 	]
 }

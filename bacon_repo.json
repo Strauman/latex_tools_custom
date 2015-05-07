@@ -1,0 +1,14 @@
+{
+	"schema_version": "3.0.0",
+	"packages": [
+		{
+			"name": "Bacon tools",
+			"details": "https://github.com/Strauman/latex_tools_custom",
+			"releases": [
+				{
+					"sublime_text": "*",
+					"tags": true
+				}
+			]
+		}]
+}
