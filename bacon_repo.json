@@ -4,11 +4,24 @@
 		{
 			"name": "Bacon tools",
 			"details": "https://github.com/Strauman/latex_tools_custom",
+			"description": "Latex tools customized for formula collections",
 			"releases": [
 				{
 					"sublime_text": "*",
 					"tags": true
 				}
 			]
-		}]
+		},{
+			"name": "Bacon bits",
+			"details": "https://bitbucket.org/duckyduck/bacon_bits",
+			"description": "Floobits customized for formula collections",
+			"releases": [
+				{
+					"sublime_text": "*",
+					"tags": true
+				}
+			]
+		}
+		]
+
 }
