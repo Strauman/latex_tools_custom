@@ -74,18 +74,18 @@ LaTeX Package keymap for OS X
         }],
         "command": "latex_ref_cite"
     }, 
-    {
-        "keys": ["\\"],
-        "context": [{
-            "key": "selector",
-            "operator": "equal",
-            "operand": "text.tex.latex"
-        }],
-        "command": "run_macro_file",
-        "args": {
-            "file": "Packages/latex_tools_custom/autoandbackslash.hidden-sublime-macro"
-        }
-    },
+    // {
+    //     "keys": ["\\"],
+    //     "context": [{
+    //         "key": "selector",
+    //         "operator": "equal",
+    //         "operand": "text.tex.latex"
+    //     }],
+    //     "command": "run_macro_file",
+    //     "args": {
+    //         "file": "Packages/latex_tools_custom/autoandbackslash.hidden-sublime-macro"
+    //     }
+    // },
     // {
     //     "keys": ["{"],
     //     "context": [{

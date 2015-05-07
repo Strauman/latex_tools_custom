@@ -12,12 +12,16 @@ class ShortsCompletions(sublime_plugin.EventListener):
     def on_query_completions(self, view, prefix, locations):
         point = view.sel()[0].b
         result=[]
+        # return result
         if not view.score_selector(point,
                 "text.tex.latex"):
             return []
         result+=self.autocomplete_newcommand(view,prefix,locations)
-        result+=self.parse_autocomplete_cwl(view,prefix,locations)
+        # result+=self.parse_autocomplete_cwl(view,prefix,locations)
         return result
+        # return (result, sublime.INHIBIT_WORD_COMPLETIONS)
+        # return (result, sublime.INHIBIT_WORD_COMPLETIONS | sublime.INHIBIT_EXPLICIT_COMPLETIONS)
+        # return (result, sublime.INHIBIT_EXPLICIT_COMPLETIONS)
 
     def view_is_selector(self, view, selector):
         point = view.sel()[0].b
@@ -43,17 +47,25 @@ class ShortsCompletions(sublime_plugin.EventListener):
             if (mode):
                 mode=mode.group(1)
                 if (mode in requires_math_mode and not self.view_is_selector(view,"text.tex.latex string.other.math")):
-                    print(mode, "requires mathmode")
+                    # print(mode, "requires mathmode")
                     continue
-            cwl_commands=re.findall(r"(\\[a-zA-Z0-9]+(:?{.*?})?)", src_content)
+            cwl_commands=re.findall(r"(\\[a-zA-Z0-9]+)(?:{([^}]+)})?", src_content)
             for m in cwl_commands:
-                result.append((m,m))
+                if (len(m) > 1):
+                    label=m[0]+"{"+m[1]+"}"
+                    content=m[0]+"{${1:"+m[1]+"}}"
+                else:
+                    content=label=m[0]
+                content=content[1:]
+                result.append((label, content))
         return result
 
 
     def autocomplete_newcommand(self, view, prefix, locations):
         file_path=False
         result=[]
+
+        print "p:", prefix
         for folder in sublime.active_window().folders():
             if (os.path.isfile(folder+COMMANDS_FILE)):
                 file_path=folder+COMMANDS_FILE
@@ -67,9 +79,16 @@ class ShortsCompletions(sublime_plugin.EventListener):
         src_content = re.sub("%.*","",src_file.read())
         src_file.close()
 
-        newcommands=re.findall(r"\\newcommand{(.*?)}(?:\[\])?.*", src_content)
+        newcommands=re.findall(r"\\newcommand{(.*?)}(?:\[\])?(?:{([^}]+)})?.*", src_content)
         for m in newcommands:
-            result.append((m,m))
+            if (len(m) > 1):
+                label=m[0]+"{arg}"
+                content=m[0]+"{$1}"
+            else:
+                content=label=m[0]
+            content=content[1:]
+            label=label[1:]
+            result.append((label, content))
         return result
 
     def on_query_context(self,view, key, operator, operand, match_all):

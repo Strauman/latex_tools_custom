@@ -1,0 +1,12 @@
+<snippet>
+	<content><![CDATA[
+\begin{longtable}{${1}}
+	s{2}
+\endfirsthead
+\endhead
+\end{longtable}
+]]></content>
+	<tabTrigger>tbll</tabTrigger>
+  <scope>text.tex.latex</scope>
+  <description>New Longtable</description>
+</snippet>
