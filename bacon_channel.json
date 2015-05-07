@@ -1,0 +1,9 @@
+{
+	"schema_version": "3.0.0",
+
+	// All repositories must be an HTTPS URL. SSL certificates help prevent
+	// unauthorized code being loaded onto users' machines.
+	"repositories": [
+		"https://github.com/buymeasoda/soda-theme"
+	]
+}
