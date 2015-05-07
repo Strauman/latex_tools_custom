@@ -4,6 +4,6 @@
 	// All repositories must be an HTTPS URL. SSL certificates help prevent
 	// unauthorized code being loaded onto users' machines.
 	"repositories": [
-		"https://github.com/buymeasoda/soda-theme"
+		"https://github.com/Strauman/jquery.hotkeys"
 	]
 }
