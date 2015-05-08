@@ -296,7 +296,7 @@ class make_pdfCommand(sublime_plugin.WindowCommand):
 			builder_path = None
 
 		# Now actually get the builder
-		ltt_path = os.path.join(sublime.packages_path(),'latex_tools_custom','builders')
+		ltt_path = os.path.join(sublime.packages_path(),'Bacon tools','builders')
 		if builder_path:
 			bld_path = os.path.join(sublime.packages_path(), builder_path)
 		else:

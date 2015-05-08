@@ -12,7 +12,7 @@ LaTeX Package keymap for OS X
         "keys": ["super+shift+m"],
         "command": "insert_snippet",
         "args": {
-            "name": "Packages/latex_tools_custom/Wrap in mmode.sublime-snippet"
+            "name": "Packages/Bacon tools/Wrap in mmode.sublime-snippet"
         }
     },
     // Reassign expand_selection to ctrl+l, ctrl+l
@@ -83,7 +83,7 @@ LaTeX Package keymap for OS X
     //     }],
     //     "command": "run_macro_file",
     //     "args": {
-    //         "file": "Packages/latex_tools_custom/autoandbackslash.hidden-sublime-macro"
+    //         "file": "Packages/Bacon tools/autoandbackslash.hidden-sublime-macro"
     //     }
     // },
     // {
@@ -95,7 +95,7 @@ LaTeX Package keymap for OS X
     //         "match_all": true
     //         }],
     //     "command": "run_macro_file", 
-    //     "args": { "file": "Packages/latex_tools_custom/fillwithcb.hidden-sublime-macro" }
+    //     "args": { "file": "Packages/Bacon tools/fillwithcb.hidden-sublime-macro" }
     // }, 
     {
         "keys": ["{"],

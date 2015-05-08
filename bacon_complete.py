@@ -30,7 +30,7 @@ class ShortsCompletions(sublime_plugin.EventListener):
     def parse_autocomplete_cwl(self,view,prefix,locations):
         requires_math_mode=["amsmath.sty"]
         result=[]
-        cwl_dir=sublime.packages_path()+"/latex_tools_custom/cwl"
+        cwl_dir=sublime.packages_path()+"/Bacon tools/cwl"
         for file_name in os.listdir(cwl_dir):
             file_path=cwl_dir+"/"+file_name
             if (not file_path.endswith(".cwl")):

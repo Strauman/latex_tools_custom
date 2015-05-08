@@ -83,7 +83,7 @@ class jump_to_tools_pdfCommand(sublime_plugin.TextCommand):
 				subprocess.Popen(jump_cmd)
 			else:
 				skim = os.path.join(sublime.packages_path(),
-								'latex_tools_custom', 'skim', 'displayfile')
+								'Bacon tools', 'skim', 'displayfile')
 				subprocess.Popen(['sh', skim] + options + [pdffile])
 		elif plat == 'win32':
 			# determine if Sumatra is running, launch it if not
@@ -138,7 +138,7 @@ class jump_to_tools_pdfCommand(sublime_plugin.TextCommand):
 			print ("Linux!")
 			
 			# the required scripts are in the 'evince' subdir
-			ev_path = os.path.join(sublime.packages_path(), 'latex_tools_custom', 'evince')
+			ev_path = os.path.join(sublime.packages_path(), 'Bacon tools', 'evince')
 			ev_fwd_exec = os.path.join(ev_path, 'evince_forward_search')
 			ev_sync_exec = os.path.join(ev_path, 'evince_sync') # for inverse search!
 			#print ev_fwd_exec, ev_sync_exec

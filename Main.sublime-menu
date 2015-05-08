@@ -17,7 +17,7 @@
                         [
                             {
                                 "command": "open_file",
-                                "args": {"file": "${packages}/latex_tools_custom/README.markdown"},
+                                "args": {"file": "${packages}/Bacon tools/README.markdown"},
                                 "caption": "README"
                             },
                             { "caption": "-" },
@@ -34,7 +34,7 @@
                             {
                                 "command": "open_file",
                                 "args": {
-                                    "file": "${packages}/latex_tools_custom/Default (OSX).sublime-keymap",
+                                    "file": "${packages}/Bacon tools/Default (OSX).sublime-keymap",
                                     "platform": "OSX"
                                 },
                                 "caption": "Key Bindings – Default"
@@ -42,7 +42,7 @@
                             {
                                 "command": "open_file",
                                 "args": {
-                                    "file": "${packages}/latex_tools_custom/Default (Linux).sublime-keymap",
+                                    "file": "${packages}/Bacon tools/Default (Linux).sublime-keymap",
                                     "platform": "Linux"
                                 },
                                 "caption": "Key Bindings – Default"
@@ -50,7 +50,7 @@
                             {
                                 "command": "open_file",
                                 "args": {
-                                    "file": "${packages}/latex_tools_custom/Default (Windows).sublime-keymap",
+                                    "file": "${packages}/Bacon tools/Default (Windows).sublime-keymap",
                                     "platform": "Windows"
                                 },
                                 "caption": "Key Bindings – Default"
