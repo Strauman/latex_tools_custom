@@ -1,6 +1,7 @@
 # ST2/ST3 compat
 from __future__ import print_function 
 import sublime
+import sublime_plugin
 if sublime.version() < '3000':
 	# we are on ST2 and Python 2.X
 	_ST3 = False
@@ -72,3 +73,16 @@ def get_tex_root(view):
 		lines.close()
 
 	return root
+
+class SetBaconRootCommand(sublime_plugin.WindowCommand):
+	def run(self, paths):
+		print(paths)
+
+	def is_visible(self):
+		return False
+
+	def is_enabled(self):
+		return False
+
+	def description(self):
+		return

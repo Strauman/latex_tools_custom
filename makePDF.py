@@ -166,7 +166,7 @@ class CmdThread ( threading.Thread ):
 		out_dir=self.caller.builder.out_dir
 		tex_base=self.caller.tex_base
 		data = open(os.path.dirname(tex_base) + "/" + out_dir + "/" + os.path.basename(tex_base) + ".log", 'rb').read()		
-		
+		build_status_file=open(os.path.join(os.path.dirname(tex_base), "build_status"), "w")
 		errors = []
 		warnings = []
 
@@ -175,10 +175,12 @@ class CmdThread ( threading.Thread ):
 			content = [""]
 			if errors:
 				self.caller.show_console()
+				build_status_file.write("0")
 				content.append("Errors:") 
 				content.append("")
 				content.extend(errors)
 			else:
+				build_status_file.write("1")
 				content.append("No errors.")
 			if warnings:
 				if errors:

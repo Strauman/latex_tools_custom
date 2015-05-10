@@ -144,8 +144,7 @@ class AwaitsCompletions(sublime_plugin.EventListener):
         # print("V:",view,"k:",key,"operator:",operator,"operand:",operand,"m_a:",match_all)
         return False
         point = view.sel()[0].b
-        if not view.score_selector(point,
-                "text.tex.latex"):
+        if not view.score_selector(point, "text.tex.latex"):
             return []
         for region in view.sel():
             line = view.line(region)
