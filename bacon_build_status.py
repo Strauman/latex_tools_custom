@@ -4,20 +4,22 @@ callback_active=False
 
 file_hidden=False
 
-def hide_build_status_file():
-	# if file_hidden:
-	# 	return
-	file_hidden=True
+SHOULD_EXCLUDE=True
+
+def add_to_exclude_files(filename):
 	prefs = sublime.load_settings('Preferences.sublime-settings')
 	hidden_files=prefs.get("file_exclude_patterns")
-	if "build_status" in hidden_files:
-		return
+	if (filename in hidden_files) and not SHOULD_EXCLUDE:
+		hidden_files.remove(filename)
+	elif(filename not in hidden_files) and SHOULD_EXCLUDE:
+		hidden_files.append(filename)
 	
-	hidden_files.append("build_status")
 	prefs.set("file_exclude_patterns", hidden_files)
 	sublime.save_settings('Preferences.sublime-settings')
 
-hide_build_status_file()
+server_file_hidden=False
+if not server_file_hidden:
+	add_to_exclude_files("build_status")
 
 def set_status_all_views(status):
 	for view in sublime.active_window().views():
@@ -27,11 +29,11 @@ def update_build_status():
 	buildstatus=None
 	for f in sublime.active_window().folders():
 		buildstatus_file=os.path.join(f, "build_status")
-		# print(buildstatus_file)
-		if os.path.isfile(buildstatus_file):
+		try:
 			buildstatus=open(buildstatus_file, 'r').read()
 			break
-	# print(buildstatus)
+		except IOError:
+			continue
 	if buildstatus=="0":
 		set_status_all_views("Build failes")
 	elif buildstatus=="1":
