@@ -4,7 +4,7 @@ callback_active=False
 
 file_hidden=False
 
-SHOULD_EXCLUDE=True
+SHOULD_EXCLUDE=False
 
 def add_to_exclude_files(filename):
 	prefs = sublime.load_settings('Preferences.sublime-settings')

@@ -164,8 +164,12 @@ class CmdThread ( threading.Thread ):
 		# if not os.path.isfile(self.caller.tex_base + ".log"):
 		# 	file=open(self.caller.tex_base + ".log", 'w+')
 		out_dir=self.caller.builder.out_dir
+		view=self.caller.view
 		tex_base=self.caller.tex_base
+		# tex_root=getTeXRoot.get_tex_root(view)
+		# tex_dir=os.path.dirname(view)
 		data = open(os.path.dirname(tex_base) + "/" + out_dir + "/" + os.path.basename(tex_base) + ".log", 'rb').read()		
+		print("tb:", os.path.dirname(tex_base))
 		build_status_file=open(os.path.join(os.path.dirname(tex_base), "build_status"), "w")
 		errors = []
 		warnings = []
@@ -225,7 +229,7 @@ class make_pdfCommand(sublime_plugin.WindowCommand):
 			self.proc = None
 		
 		view = self.window.active_view()
-
+		self.view=view
 		self.file_name = getTeXRoot.get_tex_root(view)
 		if not os.path.isfile(self.file_name):
 			sublime.error_message(self.file_name + ": file not found.")
