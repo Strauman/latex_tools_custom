@@ -4,5 +4,7 @@
 	{ "caption": "BaconTools: Jump to PDF", "command": "jump_to_tools_pdf"},
 	{ "caption": "BaconTools: Toggle focus (PDF/editor)", "command": "toggle_focus"},
 	{ "caption": "BaconTools: Reconfigure and migrate settings", "command": "latextools_migrate"},
-	{ "caption": "BaconTools: List unimplemented", "command": "bacon_check_unimplemented"}
+	{ "caption": "BaconTools: List unimplemented", "command": "bacon_list_unimplemented"},
+	{ "caption": "BaconTools: List missing", "command": "bacon_list_missing"},
+	{ "caption": "BaconTools: Insert unimplemented", "command": "bacon_insert_all_unimplemented"}
 ]
