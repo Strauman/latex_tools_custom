@@ -67,6 +67,8 @@ class BaconUnimplementedBase(sublime_plugin.WindowCommand):
 		awaitsfiles=[]
 		file_contents=open(path.join(self.topfolder, self.rootfiles_dirname, file)+".tex", 'r').read()
 		for awaits in re.findall(r"\\awaits{([^}]+)}", file_contents):
+			if awaits.endswith('.tex'):
+				awaits=self.rreplace(awaits, '.tex', '')
 			self.awaits_files.append(awaits)
 
 	def get_tex_files(self, searchdir, extension="tex"):
@@ -98,6 +100,8 @@ class BaconListDuplicatesCommand(BaconUnimplementedBase):
 	def dupeFile(self, file):
 		file_contents=open(path.join(self.topfolder, self.rootfiles_dirname, file)+".tex", 'r').read()
 		for awaits in re.findall(r"\\awaits{([^}]+)}", file_contents):
+			if awaits.endswith('.tex'):
+				awaits=self.rreplace(awaits, '.tex', '')
 			if(awaits in self.awaits_files):
 				self.dupes.append(awaits)
 			else:
