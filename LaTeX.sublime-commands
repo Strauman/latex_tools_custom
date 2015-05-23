@@ -6,5 +6,6 @@
 	{ "caption": "BaconTools: Reconfigure and migrate settings", "command": "latextools_migrate"},
 	{ "caption": "BaconTools: List unimplemented", "command": "bacon_list_unimplemented"},
 	{ "caption": "BaconTools: List missing", "command": "bacon_list_missing"},
-	{ "caption": "BaconTools: Insert unimplemented", "command": "bacon_insert_all_unimplemented"}
+	{ "caption": "BaconTools: Insert unimplemented", "command": "bacon_insert_all_unimplemented"},
+	{ "caption": "BaconTools: List duplicates", "command": "bacon_list_duplicates"}
 ]
