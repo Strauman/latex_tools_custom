@@ -61,7 +61,9 @@ class BaconUnimplementedBase(sublime_plugin.WindowCommand):
 	def setChosenToClipboard(self, index):
 		if index==-1:
 			return
-		sublime.set_clipboard("\\awaits{"+self.not_implemented[index]+"}")
+		awaits_code="\\awaits{"+self.unimplemented[index]+"}"
+		self.insert_on_sel(awaits_code)
+		# sublime.set_clipboard(awaits_code)
 
 	def searchFileForAwaits(self, file):
 		awaitsfiles=[]
@@ -79,6 +81,14 @@ class BaconUnimplementedBase(sublime_plugin.WindowCommand):
 					continue
 			files.append(self.rreplace(filename, '.tex', ''))
 		return files
+	def insert_on_sel(self, contents):
+		view=self.window.active_view()
+		for reg in view.sel():
+			line=view.line(reg)
+			edit=view.begin_edit()
+			view.insert(edit, reg, contents)
+			view.end_edit(edit)
+			return
 
 
 class BaconListDuplicatesCommand(BaconUnimplementedBase):	
@@ -96,7 +106,9 @@ class BaconListDuplicatesCommand(BaconUnimplementedBase):
 	def setChosenToClipboard(self, index):
 		if index==-1:
 			return
-		sublime.set_clipboard("\\awaits{"+self.dupes[index]+"}")
+		awaits_code="\\awaits{"+self.dupes[index]+"}"
+		self.insert_on_sel(awaits_code)
+		# sublime.set_clipboard(awaits_code)
 	def dupeFile(self, file):
 		file_contents=open(path.join(self.topfolder, self.rootfiles_dirname, file)+".tex", 'r').read()
 		for awaits in re.findall(r"\\awaits{([^}]+)}", file_contents):
