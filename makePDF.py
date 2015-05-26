@@ -54,7 +54,20 @@ class CmdThread ( threading.Thread ):
 
 	def run ( self ):
 		print ("Welcome to thread " + self.getName())
+		buildno_path=os.path.join(os.path.dirname(self.caller.tex_base), "buildno.tex")
+		buildno_f=open(buildno_path, "r")
+		no=buildno_f.read()
+		if not no:
+			no=0
+		else:
+			no=int(no)
+		no+=1
+		buildno_f.close()
+		buildno_f=open(buildno_path, "w+")
+		buildno_f.write(str(no))
+		buildno_f.close()
 		self.caller.output("[Compiling " + self.caller.file_name + "]")
+		self.caller.output("Builno: "+str(no))
 
 		# Handle custom env variables
 		if self.caller.env:
@@ -85,6 +98,7 @@ class CmdThread ( threading.Thread ):
 
 		# Now, iteratively call the builder iterator
 		#
+
 		cmd_iterator = self.caller.builder.commands()
 		for (cmd, msg) in cmd_iterator:
 
