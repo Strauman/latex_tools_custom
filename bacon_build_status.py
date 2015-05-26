@@ -17,9 +17,9 @@ def add_to_exclude_files(filename):
 	prefs.set("file_exclude_patterns", hidden_files)
 	sublime.save_settings('Preferences.sublime-settings')
 
-server_file_hidden=False
-if not server_file_hidden:
-	add_to_exclude_files("build_status")
+# server_file_hidden=False
+# if not server_file_hidden:
+	# add_to_exclude_files("build_status")
 
 def set_status_all_views(status):
 	for view in sublime.active_window().views():
@@ -29,6 +29,8 @@ def update_build_status():
 	buildstatus=None
 	for f in sublime.active_window().folders():
 		buildstatus_file=os.path.join(f, "build_status")
+		if not os.path.isfile(buildstatus_file):
+			continue
 		try:
 			buildstatus=open(buildstatus_file, 'r').read()
 			break
