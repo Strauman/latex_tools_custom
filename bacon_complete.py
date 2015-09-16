@@ -4,10 +4,12 @@ import os
 import re
 import codecs
 
-COMMANDS_FILE="/lib/shorts.tex"
+# COMMANDS_FILE="/lib/shorts.tex"
+COMMANDS_FILES=["/commands.tex"]
+# COMMANDS_FILE="/commands.tex"
 # class LatexCompleteCommand(sublime_plugin.TextCommand):
 #     def run
-
+ 
 class ShortsCompletions(sublime_plugin.EventListener):
     def on_query_completions(self, view, prefix, locations):
         point = view.sel()[0].b
@@ -16,8 +18,10 @@ class ShortsCompletions(sublime_plugin.EventListener):
         if not view.score_selector(point,
                 "text.tex.latex"):
             return []
-        result+=self.autocomplete_newcommand(view,prefix,locations)
-        # result+=self.parse_autocomplete_cwl(view,prefix,locations)
+        # result+=self.autocomplete_newcommand(view,prefix,locations,COMMANDS_FILE)
+        for fname in COMMANDS_FILES:
+            result+=self.autocomplete_newcommand(view,prefix,locations,fname)
+        
         return result
         # return (result, sublime.INHIBIT_WORD_COMPLETIONS)
         # return (result, sublime.INHIBIT_WORD_COMPLETIONS | sublime.INHIBIT_EXPLICIT_COMPLETIONS)
@@ -26,7 +30,6 @@ class ShortsCompletions(sublime_plugin.EventListener):
     def view_is_selector(self, view, selector):
         point = view.sel()[0].b
         return view.score_selector(point, selector)
-
     def parse_autocomplete_cwl(self,view,prefix,locations):
         requires_math_mode=["amsmath.sty"]
         result=[]
@@ -40,7 +43,8 @@ class ShortsCompletions(sublime_plugin.EventListener):
             except IOError:
                 sublime.status_message("bacon_tools WARNING: cannot open cwl files " + file_path)
                 print ("WARNING! I can't find it! Check your \\include's and \\input's.")
-            src_content = re.sub("%.*","",src_file.read())
+            src_content = re.sub("%%%%(.*)",r'\1',src_file.read())
+            src_content = re.sub("%%.*","",src_file.read())
             src_file.close()
             first_line=src_content.split('\n', 1)[0]
             mode=re.search(r"mode:[\s]*(.*)", first_line)
@@ -61,14 +65,14 @@ class ShortsCompletions(sublime_plugin.EventListener):
         return result
 
 
-    def autocomplete_newcommand(self, view, prefix, locations):
+    def autocomplete_newcommand(self, view, prefix, locations, file_name):
         file_path=False
         result=[]
 
         print "p:", prefix
         for folder in sublime.active_window().folders():
-            if (os.path.isfile(folder+COMMANDS_FILE)):
-                file_path=folder+COMMANDS_FILE
+            if (os.path.isfile(folder+file_name)):
+                file_path=folder+file_name
         if(not file_path):
             return []
         try:

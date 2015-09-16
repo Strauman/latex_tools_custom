@@ -126,7 +126,7 @@ class BaconListUnimplementedCommand(BaconUnimplementedBase):
 
 class BaconListMissingCommand(BaconUnimplementedBase):	
 	def beforeRun(self):
-		self.mode="unimplemented"
+		self.mode="missing"
 
 class BaconInsertAllUnimplementedCommand(BaconUnimplementedBase):
 	def run(self):

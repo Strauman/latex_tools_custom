@@ -121,14 +121,6 @@ class TraditionalBuilder(PdfBuilder):
 		cmd[6] = cmd[6].replace("%F", out_dir)
 		# texify wants the .tex extension; latexmk doesn't care either way
 		yield (cmd + [self.tex_name], "Invoking " + cmd[0] + "... ")
-		if (self.output_settings.get("auto_clean", True)):
-			clcmd=DEFAULT_CLEAN_COMMAND[:]
-			for tmproot, dirs, files in os.walk(out_dir):
-				for currentFile in files:
-					temp_exts = ('.blg','.bbl','.aux','.brf','.nlo','.out','.dvi','.ps','.lof','.toc','.fls','.fdb_latexmk','.pdfsync','.ind','.ilg','.idx')
-					#'.synctex.gz'
-					if any(currentFile.lower().endswith(ext) for ext in temp_exts):
-						os.remove(os.path.join(tmproot, currentFile))
 			
 		self.display("done.\n")
 		self.display("built in "+out_dir+"\n")

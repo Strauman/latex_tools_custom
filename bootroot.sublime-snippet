@@ -1,6 +1,6 @@
 <snippet>
 	<content><![CDATA[
-%!TEX root = ../bootstrap.tex
+%!TEX root = main.tex
 
 ]]></content>
 	<tabTrigger>br</tabTrigger>
