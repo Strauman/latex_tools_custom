@@ -41,7 +41,7 @@ def getOEMCP():
 
 
 
-DEFAULT_CLEAN_COMMAND = ["latexmk", "-c %F"]
+
 # First, define thread class for async processing
 
 class CmdThread ( threading.Thread ):
@@ -53,21 +53,20 @@ class CmdThread ( threading.Thread ):
 
 	def run ( self ):
 		print ("Welcome to thread " + self.getName())
-		self.caller.output("[Compiling " + self.caller.file_name + "]")
 		buildno_path=os.path.join(os.path.dirname(self.caller.tex_base), "buildno.tex")
-		if os.path.isfile(buildno_path):
-			buildno_f=open(buildno_path, "r")
-			no=buildno_f.read()
-			if not no:
-				no=0
-			else:
-				no=int(no)
-			no+=1
-			buildno_f.close()
-			buildno_f=open(buildno_path, "w+")
-			buildno_f.write(str(no))
-			buildno_f.close()
-			self.caller.output("Builno: "+str(no))
+		buildno_f=open(buildno_path, "r")
+		no=buildno_f.read()
+		if not no:
+			no=0
+		else:
+			no=int(no)
+		no+=1
+		buildno_f.close()
+		buildno_f=open(buildno_path, "w+")
+		buildno_f.write(str(no))
+		buildno_f.close()
+		self.caller.output("[Compiling " + self.caller.file_name + "]")
+		self.caller.output("Builno: "+str(no))
 
 		# Handle custom env variables
 		if self.caller.env:
@@ -182,15 +181,6 @@ class CmdThread ( threading.Thread ):
 		tex_base=self.caller.tex_base
 		# tex_root=getTeXRoot.get_tex_root(view)
 		# tex_dir=os.path.dirname(view)
-		
-		if (self.caller.builder.output_settings.get("auto_clean", True)):
-			# clcmd=DEFAULT_CLEAN_COMMAND[:]
-			for tmproot, dirs, files in os.walk(out_dir):
-				for currentFile in files:
-					temp_exts = ('.blg','.bbl','.aux','.brf','.nlo','.out','.dvi','.ps','.lof','.toc','.fls','.fdb_latexmk','.pdfsync','.ind','.ilg','.idx')
-					#'.synctex.gz'
-					if any(currentFile.lower().endswith(ext) for ext in temp_exts):
-						os.remove(os.path.join(tmproot, currentFile))
 		data = open(os.path.dirname(tex_base) + "/" + out_dir + "/" + os.path.basename(tex_base) + ".log", 'rb').read()		
 		print("tb:", os.path.dirname(tex_base))
 		build_status_file=open(os.path.join(os.path.dirname(tex_base), "build_status"), "w")

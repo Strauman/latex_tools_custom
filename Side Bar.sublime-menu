@@ -1,9 +1,0 @@
-[
-  { "caption": "-"},
-  {
-    "caption": "Bacon tools", "id":"side-bar-bacon-tools",
-    "children": [
-      {"caption": "Set texroot", "command": "set_bacon_root", "args": {"paths": []}}
-    ]
-  }
-]
