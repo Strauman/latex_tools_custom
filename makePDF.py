@@ -255,7 +255,7 @@ class make_pdfCommand(sublime_plugin.WindowCommand):
 		view = self.window.active_view()
 		self.view=view
 		self.file_name = getTeXRoot.get_tex_root(view)
-		if not os.path.isfile(self.file_name):
+		if not os.path.isfile(self.file_name): 
 			sublime.error_message(self.file_name + ": file not found.")
 			return
 
