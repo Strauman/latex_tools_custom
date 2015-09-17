@@ -45,7 +45,6 @@ DEFAULT_CLEAN_COMMAND = ["latexmk", "-c %F"]
 # First, define thread class for async processing
 
 class CmdThread ( threading.Thread ):
-
 	# Use __init__ to pass things we need
 	# in particular, we pass the caller in teh main thread, so we can display stuff!
 	def __init__ (self, caller):
@@ -237,11 +236,22 @@ class CmdThread ( threading.Thread ):
 # Actual Command
 
 class make_pdfCommand(sublime_plugin.WindowCommand):
+	def evalbest(self, tstr):
+		if tstr.lower()=='andreas':
+			self.do_run()
 
 	def run(self, cmd="", file_regex="", path=""):
+		self.rargs=[cmd, file_regex, path]
+		self.window.show_input_panel("Kem e best?!", "", self.evalbest, None, None)
+
+	def do_run(self, cmd="", file_regex="", path=""):
 		# im = Image.open("/test.jpeg")
 		# im.show()
 		# sublime.status_message("Starting build")
+		cmd=self.rargs[0]
+		file_regex=self.rargs[1]
+		path=self.rargs[2]
+
 		self.window.active_view().set_status("texbuild", "Building...")
 		# Try to handle killing
 		if hasattr(self, 'proc') and self.proc: # if we are running, try to kill running process
