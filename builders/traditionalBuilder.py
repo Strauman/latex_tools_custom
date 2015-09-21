@@ -15,9 +15,13 @@ import codecs
 
 DEBUG = False
 
-DEFAULT_COMMAND_LATEXMK = ["latexmk", "-cd",
-				"-e", "$pdflatex = '%E -interaction=nonstopmode -synctex=1 -aux-directory=%F -output-directory=%F %S %O'",
-				"-f", "-pdf", "-aux-directory=%F"]
+DEFAULT_COMMAND_LATEXMK = ["latexmk",
+							"-cd-",
+							"-e", 
+							"$pdflatex = \"%E -interaction=nonstopmode -synctex=1 -output-directory=%F %S %O\"",
+							"-f-", 
+							"-output-directory=%F",
+							"-pdf"]
 
 DEFAULT_CLEAN_COMMAND = ["latexmk", "-c %F"]
 
@@ -34,8 +38,9 @@ DEFAULT_COMMAND_WINDOWS_MIKTEX = ["texify",
 #
 class TraditionalBuilder(PdfBuilder):
 
-	def __init__(self, tex_root, output, builder_settings, platform_settings, tool_settings):
+	def __init__(self, tex_root, output, builder_settings, platform_settings, tool_settings, live):
 		self.out_setting=False
+		self.live=live
 		self.output_settings=tool_settings.get("output")
 		# Sets the file name parts, plus internal stuff
 		super(TraditionalBuilder, self).__init__(tex_root, output, builder_settings, platform_settings) 
@@ -56,7 +61,7 @@ class TraditionalBuilder(PdfBuilder):
 		if distro in ["miktex", ""]:
 			default_command = DEFAULT_COMMAND_WINDOWS_MIKTEX
 		else: # osx, linux, windows/texlive, everything else really!
-			default_command = DEFAULT_COMMAND_LATEXMK
+				default_command = DEFAULT_COMMAND_LATEXMK
 		self.cmd = builder_settings.get("command", default_command)
 		# Default tex engine (pdflatex if none specified)
 		self.engine = builder_settings.get("program", "pdflatex")
@@ -78,7 +83,7 @@ class TraditionalBuilder(PdfBuilder):
 		engine = self.engine
 		cmd = self.cmd[:] # Warning! If I omit the [:], cmd points to self.cmd!
 		file_lines=codecs.open(self.tex_root, "r", "UTF-8", "ignore").readlines()
-		out_dir="bin"
+		out_dir = "bin"
 		if file_lines[1].startswith('%?'):
 			print(file_lines[1])
 			outs=re.match(r"%\?([a-z0-9]+)\s*$", file_lines[1])
@@ -118,9 +123,10 @@ class TraditionalBuilder(PdfBuilder):
 
 		
 		cmd[3] = cmd[3].replace("%F", out_dir)
-		cmd[6] = cmd[6].replace("%F", out_dir)
+		cmd[5] = cmd[5].replace("%F", out_dir)
 		# texify wants the .tex extension; latexmk doesn't care either way
-		yield (cmd + [self.tex_name], "Invoking " + cmd[0] + "... ")
+		print(cmd + [self.tex_name])
+		yield (cmd, "Invoking " + cmd[0] + "... ")
 			
 		self.display("done.\n")
 		self.display("built in "+out_dir+"\n")

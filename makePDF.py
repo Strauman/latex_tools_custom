@@ -99,10 +99,16 @@ class CmdThread ( threading.Thread ):
 
 		# Now, iteratively call the builder iterator
 		#
-
 		cmd_iterator = self.caller.builder.commands()
+		dispatch=self.caller.builder.live
 		for (cmd, msg) in cmd_iterator:
-
+			if dispatch:
+				# cmd[3]="'"+'$pdf_previewer="open -a /Applications/Skim.app";'+cmd[3]+"'"
+				cmd[3]="$pdf_previewer=\"open -a /Applications/Skim.app\";"+cmd[3]
+				cmd.append("-quiet")
+				cmd.append("-pvc")
+				# cmd.append("-v")
+			cmd+=[self.caller.builder.tex_name]
 			# If there is a message, display it
 			if msg:
 				self.caller.output(msg)
@@ -111,13 +117,13 @@ class CmdThread ( threading.Thread ):
 			# (Avoids error with empty cmd_iterator)
 			if cmd == "":
 				break
-			print(cmd)
+			print(' '.join(cmd))
 			# Now create a Popen object
 			try:
 				if self.caller.plat == "windows":
 					proc = subprocess.Popen(cmd, startupinfo=startupinfo, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
 				elif self.caller.plat == "osx":
-					# Temporary (?) fix for Yosemite: pass environment
+						# Temporary (?) fix for Yosemite: pass environment
 					proc = subprocess.Popen(cmd, stderr=subprocess.STDOUT, stdout=subprocess.PIPE, env=os.environ)
 				else: # Must be linux
 					proc = subprocess.Popen(cmd, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
@@ -136,9 +142,12 @@ class CmdThread ( threading.Thread ):
 			# Now actually invoke the command, making sure we allow for killing
 			# First, save process handle into caller; then communicate (which blocks)
 			self.caller.proc = proc
+			lines_iterator = iter(self.caller.proc.stdout.readline, b"")
+    			for line in lines_iterator:
+        			self.caller.builder.display(line) # yield line
 			out, err = proc.communicate()
+			print(out)
 			self.caller.builder.set_output(out.decode(self.caller.encoding,"ignore"))
-
 			# Here the process terminated, but it may have been killed. If so, stop and don't read log
 			# Since we set self.caller.proc above, if it is None, the process must have been killed.
 			# TODO: clean up?
@@ -148,6 +157,7 @@ class CmdThread ( threading.Thread ):
 				self.caller.finish(False)	# We kill, so won't switch to PDF anyway
 				return
 			# Here we are done cleanly:
+
 			self.caller.proc = None
 			print ("Finished normally")
 			print (proc.returncode)
@@ -238,10 +248,13 @@ class CmdThread ( threading.Thread ):
 
 class make_pdfCommand(sublime_plugin.WindowCommand):
 
-	def run(self, cmd="", file_regex="", path=""):
+	def run(self, cmd="", file_regex="", path="", live=False):
 		# im = Image.open("/test.jpeg")
 		# im.show()
 		# sublime.status_message("Starting build")
+		self.live=live
+		print("LIVE:")
+		print(live)
 		self.window.active_view().set_status("texbuild", "Building...")
 		# Try to handle killing
 		if hasattr(self, 'proc') and self.proc: # if we are running, try to kill running process
@@ -355,7 +368,7 @@ class make_pdfCommand(sublime_plugin.WindowCommand):
 		builder_class = getattr(builder_module, builder_class_name)
 		print(repr(builder_class))
 		# We should now be able to construct the builder object
-		self.builder = builder_class(self.file_name, self.output, builder_settings, platform_settings, sublime.load_settings("LaTeXTools.sublime-settings"))
+		self.builder = builder_class(self.file_name, self.output, builder_settings, platform_settings, sublime.load_settings("LaTeXTools.sublime-settings"), live)
 		
 		# Restore Python system path
 		sys.path[:] = syspath_save
