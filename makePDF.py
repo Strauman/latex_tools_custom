@@ -104,7 +104,7 @@ class CmdThread ( threading.Thread ):
 		for (cmd, msg) in cmd_iterator:
 			if dispatch:
 				# cmd[3]="'"+'$pdf_previewer="open -a /Applications/Skim.app";'+cmd[3]+"'"
-				cmd[3]="$pdf_previewer=\"open -a /Applications/Skim.app\";"+cmd[3]
+				cmd[3]="$pdf_previewer=\"open -a /Applications/Skim.app\";"#+cmd[3]
 				cmd.append("-quiet")
 				cmd.append("-pvc")
 				# cmd.append("-v")
