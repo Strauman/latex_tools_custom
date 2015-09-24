@@ -141,12 +141,15 @@ class CmdThread ( threading.Thread ):
 			
 			# Now actually invoke the command, making sure we allow for killing
 			# First, save process handle into caller; then communicate (which blocks)
+			
 			self.caller.proc = proc
-			lines_iterator = iter(self.caller.proc.stdout.readline, b"")
-    			for line in lines_iterator:
-        			self.caller.builder.display(line) # yield line
+			if dispatch:
+				lines_iterator = iter(self.caller.proc.stdout.readline, b"")
+    				for line in lines_iterator:
+        				self.caller.builder.display(line) # yield line
 			out, err = proc.communicate()
-			print(out)
+			if dispatch:
+				print(out)
 			self.caller.builder.set_output(out.decode(self.caller.encoding,"ignore"))
 			# Here the process terminated, but it may have been killed. If so, stop and don't read log
 			# Since we set self.caller.proc above, if it is None, the process must have been killed.
