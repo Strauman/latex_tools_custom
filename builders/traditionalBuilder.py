@@ -19,6 +19,7 @@ DEFAULT_COMMAND_LATEXMK = ["latexmk",
 							"-cd-",
 							"-e", 
 							"$pdflatex = \"%E -interaction=nonstopmode -synctex=1 -output-directory=%F %S %O\"",
+							# "$pdflatex = \"%E -interaction=nonstopmode -synctex=1 -output-directory=%F -shell-escape %S %O\"",
 							"-f-", 
 							"-output-directory=%F",
 							"-pdf"]
