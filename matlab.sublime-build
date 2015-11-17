@@ -1,0 +1,7 @@
+{
+	"cmd": ["/Applications/MATLAB_R2015a.app/bin/matlab", "-nosplash", "-minimize", "-r", "$file_base_name"],
+	//"cmd": ["/Applications/MATLAB_R2015a.app/bin/matlab", "-nosplash", "-r", "$file_base_name"],
+
+    //"cmd": ["/Applications/MATLAB_R2015a.app/bin/matlab", "-nosplash", "-r", "$file_base_name"], ::: ORG:::
+    "selector": "source.m"
+}

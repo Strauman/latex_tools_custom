@@ -1,9 +1,9 @@
 <snippet>
 	<content><![CDATA[
-%!TEX root = ../bootstrap.tex
+%!TEX root = main.tex
 
 ]]></content>
-	<tabTrigger>bf</tabTrigger>
+	<tabTrigger>br</tabTrigger>
 	<scope>text.tex.latex</scope>
 	<description>Sets %!TEX root = ../bootstrap.tex</description>
 </snippet>

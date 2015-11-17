@@ -5,7 +5,7 @@ import re
 import codecs
 
 # COMMANDS_FILE="/lib/shorts.tex"
-COMMANDS_FILES=["/commands.tex"]
+COMMANDS_FILES=["/commands.tex", "/lib/shorts.tex", "/lob/remap.tex"]
 # COMMANDS_FILE="/commands.tex"
 # class LatexCompleteCommand(sublime_plugin.TextCommand):
 #     def run
@@ -69,7 +69,7 @@ class ShortsCompletions(sublime_plugin.EventListener):
         file_path=False
         result=[]
 
-        print "p:", prefix
+        # print "p:", prefix
         for folder in sublime.active_window().folders():
             if (os.path.isfile(folder+file_name)):
                 file_path=folder+file_name
