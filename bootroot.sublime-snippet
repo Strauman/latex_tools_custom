@@ -3,7 +3,7 @@
 %!TEX root = ../bootstrap.tex
 
 ]]></content>
-	<tabTrigger>bf</tabTrigger>
+	<tabTrigger>bb</tabTrigger>
 	<scope>text.tex.latex</scope>
 	<description>Sets %!TEX root = ../bootstrap.tex</description>
 </snippet>
