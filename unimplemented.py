@@ -62,8 +62,8 @@ class BaconUnimplementedBase(sublime_plugin.WindowCommand):
 		if index==-1:
 			return
 		awaits_code="\\awaits{"+self.unimplemented[index]+"}"
-		self.insert_on_sel(awaits_code)
-		# sublime.set_clipboard(awaits_code)
+		# self.insert_on_sel(awaits_code)
+		sublime.set_clipboard(awaits_code)
 
 	def searchFileForAwaits(self, file):
 		awaitsfiles=[]
