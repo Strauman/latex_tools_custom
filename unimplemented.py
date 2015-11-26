@@ -52,16 +52,24 @@ class BaconUnimplementedBase(sublime_plugin.WindowCommand):
 
 		if (self.mode=="unimplemented"):
 			diff=list(set(self.unimplemented))
-		elif self.mode=="missing":
-			diff=list(set(self.missing))
+			self.window.show_quick_panel(sorted(set(diff)), self.setChosenToClipboard)
+		elif self.mode=="all":
+			diff=list(set(self.unimplemented))
+			awaits_code=""
+			for i in sorted(set(diff)):
+				awaits_code+="\\awaits{"+i+"}\n"
+			sublime.set_clipboard(awaits_code)
+
 		else:
 			return
-		self.window.show_quick_panel(sorted(set(diff)), self.setChosenToClipboard)
+		
 
 	def setChosenToClipboard(self, index):
 		if index==-1:
 			return
-		awaits_code="\\awaits{"+self.unimplemented[index]+"}"
+		
+		unimp=sorted(set(self.unimplemented))
+		awaits_code="\\awaits{"+unimp[index]+"}"
 		# self.insert_on_sel(awaits_code)
 		sublime.set_clipboard(awaits_code)
 
@@ -123,6 +131,9 @@ class BaconListDuplicatesCommand(BaconUnimplementedBase):
 class BaconListUnimplementedCommand(BaconUnimplementedBase):	
 	def beforeRun(self):
 		self.mode="unimplemented"
+class BaconCopyUnimplementedCommand(BaconUnimplementedBase):	
+	def beforeRun(self):
+		self.mode="all"
 
 class BaconListMissingCommand(BaconUnimplementedBase):	
 	def beforeRun(self):
