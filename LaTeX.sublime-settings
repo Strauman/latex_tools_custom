@@ -1,0 +1,11 @@
+{
+	"save_on_focus_lost": false,
+	"spell_check": false,
+	"auto_complete": true,
+	"auto_complete_triggers": [ 
+		{
+			"selector": "text.tex.latex", 
+			"characters": "\\"
+		} 
+	]
+}
