@@ -5,7 +5,7 @@ import re
 import codecs
 
 # COMMANDS_FILE="/lib/shorts.tex"
-COMMANDS_FILES=["/commands.tex", "/lib/shorts.tex", "/lob/remap.tex"]
+COMMANDS_FILES=["/rapport/commands.tex", "~/Documents/LaTeX/preamble/commands.tex","/commands.tex", "/lib/shorts.tex", "/lob/remap.tex"]
 # COMMANDS_FILE="/commands.tex"
 # class LatexCompleteCommand(sublime_plugin.TextCommand):
 #     def run
@@ -80,14 +80,38 @@ class ShortsCompletions(sublime_plugin.EventListener):
         except IOError:
             sublime.status_message("bacon_tools WARNING: cannot open shorts file " + file_path)
             print ("WARNING! I can't find it! Check your \\include's and \\input's.")
-        src_content = re.sub("%.*","",src_file.read())
+        src_content = src_file.read()#re.sub("%.*","",src_file.read())
         src_file.close()
 
-        newcommands=re.findall(r"\\newcommand{(.*?)}(?:\[\])?(?:{([^}]+)})?.*", src_content)
+        ## WORKING: ##
+        # newcommands=re.findall(r"\\newcommand{(.*?)}(?:\[\])?(?:{([^}]+)})?.*", src_content)
+        ## NEW ##
+        # r"\\newcommand{(.*?)}(?:\[([0-9])\])?(?:{([^}]+)})?.*}(%%\([a-zA-Z0-9,]+\)%%)?"
+        # Format ish:
+        # \newcommand{(|STRINGAZ|)}[|NUMARGS|]{dostuff}%%(|argname,argname|)%%
+        #                  0            1         2              3
+        # lcontent=src_content.split("\n")
+        newcommands=re.findall(r"\\newcommand{(.*?)}(?:\[([0-9])\])?(?:{([^}]+)})?.*}(?:%%\(([a-zA-Z0-9,]+)\)%%)?", src_content)
         for m in newcommands:
+            #m[0]:commandName including \
+            #m[1]:numArgs
+            #m[2]:CommandBody
+            #m[3]:argnames
             if (len(m) > 1):
-                label=m[0]+"{arg}"
-                content=m[0]+"{$1}"
+                label=m[0]
+                content=m[0]
+                if m[1]:
+                    if int(m[1]) > 0:
+                        label+='[{0}]'.format(m[1])
+                if m[3]:
+                    argnames=m[3].split(",")
+                    for i,nm in enumerate(argnames,start=1):
+                        label+="{{{0}}}".format(nm)
+                        #Snippet syntax ${1:PLACEHOLDER}
+                        content+="{{${{{0}:{1}}}}}".format(i,nm)
+                elif m[1] and int(m[1])>0:
+                    for i in range(1,int(m[1])+1):
+                        content+="{{${0}}}".format(i)
             else:
                 content=label=m[0]
             content=content[1:]
@@ -116,7 +140,7 @@ class AwaitsCompletions(sublime_plugin.EventListener):
                 searchdir=folder+INPUT_PATH
                 break
         if not searchdir:
-            print("not in search dir")
+            # print("not in search dir")
             return []
 
         for region in self.view.sel():
