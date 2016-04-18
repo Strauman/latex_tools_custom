@@ -81,6 +81,7 @@ class ShortsCompletions(sublime_plugin.EventListener):
             sublime.status_message("bacon_tools WARNING: cannot open shorts file " + file_path)
             print ("WARNING! I can't find it! Check your \\include's and \\input's.")
         src_content = src_file.read()#re.sub("%.*","",src_file.read())
+        # src_content = re.sub("^%.*","",src_file.read())
         src_file.close()
 
         ## WORKING: ##
@@ -88,30 +89,43 @@ class ShortsCompletions(sublime_plugin.EventListener):
         ## NEW ##
         # r"\\newcommand{(.*?)}(?:\[([0-9])\])?(?:{([^}]+)})?.*}(%%\([a-zA-Z0-9,]+\)%%)?"
         # Format ish:
-        # \newcommand{(|STRINGAZ|)}[|NUMARGS|]{dostuff}%%(|argname,argname|)%%
-        #                  0            1         2              3
+        # \newcommand{(|STRINGAZ|)}[|NUMARGS|][|optArgs|]{dostuff}%%(|argname,argname|)%%%DESCRIPTION%
+        #                  0            1        2           3                4             5
         # lcontent=src_content.split("\n")
-        newcommands=re.findall(r"\\newcommand{(.*?)}(?:\[([0-9])\])?(?:{([^}]+)})?.*}(?:%%\(([a-zA-Z0-9,]+)\)%%)?", src_content)
+
+        ## WorkingBackup
+        # r"\\newcommand{(.*?)}(?:\[([0-9])\])?(?:\[(.*?)\])?(?:{([^}]+)})?.*}(?:%%\(([a-zA-Z0-9,]+)\)%%)?(?:%([^%]+)%)?"
+        newcommands=re.findall(r"^\\newcommand{(.*?)}(?:\[([0-9])\])?(?:\[(.*?)\])?[^%]+(?:%%\(([a-zA-Z0-9,]+)\)%%)?(?:%([^%]+)%)?", src_content, flags=re.M)
+
         for m in newcommands:
-            #m[0]:commandName including \
-            #m[1]:numArgs
-            #m[2]:CommandBody
-            #m[3]:argnames
+            commandName=m[0]
+            numArgs=m[1]
+            optArgVals=m[2]
+            # body=m[3]
+            argnames=m[3]
+            description=m[4]
             if (len(m) > 1):
-                label=m[0]
-                content=m[0]
-                if m[1]:
-                    if int(m[1]) > 0:
-                        label+='[{0}]'.format(m[1])
-                if m[3]:
-                    argnames=m[3].split(",")
-                    for i,nm in enumerate(argnames,start=1):
+                label=commandName
+                content=commandName
+                if optArgVals:
+                    label+="[{0}]".format(optArgVals)
+                    content+="[{0}]".format(optArgVals)
+                if argnames:
+                    anames=argnames.split(",")
+                    for i,nm in enumerate(anames,start=1):
                         label+="{{{0}}}".format(nm)
                         #Snippet syntax ${1:PLACEHOLDER}
                         content+="{{${{{0}:{1}}}}}".format(i,nm)
-                elif m[1] and int(m[1])>0:
-                    for i in range(1,int(m[1])+1):
+                elif numArgs and int(numArgs)>0:
+                    numReqArgs=int(numArgs)
+                    if optArgVals:
+                        numReqArgs-=1
+                    label+="({0})".format(numReqArgs)
+
+                    for i in range(1,numReqArgs+1):
                         content+="{{${0}}}".format(i)
+                if description:
+                    label+="\t{0}".format(description)
             else:
                 content=label=m[0]
             content=content[1:]
