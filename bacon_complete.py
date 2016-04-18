@@ -95,7 +95,9 @@ class ShortsCompletions(sublime_plugin.EventListener):
 
         ## WorkingBackup
         # r"\\newcommand{(.*?)}(?:\[([0-9])\])?(?:\[(.*?)\])?(?:{([^}]+)})?.*}(?:%%\(([a-zA-Z0-9,]+)\)%%)?(?:%([^%]+)%)?"
-        newcommands=re.findall(r"^\\newcommand{(.*?)}(?:\[([0-9])\])?(?:\[(.*?)\])?[^%]+(?:%%\(([a-zA-Z0-9,]+)\)%%)?(?:%([^%]+)%)?", src_content, flags=re.M)
+        #^(?:%%)?\\newcommand{(.*?)}(?:\[([0-9])\])?(?:\[(.*?)\])?(?:%%\(([a-zA-Z0-9,]+)\)%%)?(?:%([^%]+)%)?$
+        
+        newcommands=re.findall(r"^(?:%%)?\\newcommand{([^}]+)}(?:\[([0-9])\])?(?:\[(.*?)\])?[^%\n]+(?:%%\(([a-zA-Z0-9,]+)\)%%)?(?:%([^%]+)%)?$", src_content, flags=re.M)
 
         for m in newcommands:
             commandName=m[0]
