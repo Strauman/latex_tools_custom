@@ -2,7 +2,7 @@
 	<content><![CDATA[
 \begin{figure}[${1:tb}]
 	\centering
-	\includegraphics[$2]{$3}
+	\includegraphics[${2:width=\textwidth}]{$3}
 	\caption{${4:Caption here}}
 	\label{${5:fig:figure1}}
 \end{figure}
