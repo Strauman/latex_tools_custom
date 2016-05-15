@@ -5,7 +5,7 @@ import re
 import codecs
 
 # COMMANDS_FILE="/lib/shorts.tex"
-COMMANDS_FILES=["/rapport/commands.tex", "~/Documents/LaTeX/preamble/commands.tex","/commands.tex", "/lib/shorts.tex", "/lob/remap.tex"]
+COMMANDS_FILES=["/rapport/commands.tex", "~/Documents/LaTeX/preamble/commands.tex","/commands.tex", "/lib/shorts.tex", "/lob/remap.tex", "/lib/commands.tex"]
 # COMMANDS_FILE="/commands.tex"
 # class LatexCompleteCommand(sublime_plugin.TextCommand):
 #     def run
@@ -62,8 +62,62 @@ class ShortsCompletions(sublime_plugin.EventListener):
                     content=label=m[0]
                 content=content[1:]
                 result.append((label, content))
+            return result
+    def format_command(self, commandName, numArgs, optArgVals, argnames, description):
+        label=commandName
+        content=commandName
+        if optArgVals:
+            label+="[{0}]".format(optArgVals)
+            content+="[${{1:{0}}}]".format(optArgVals)
+        if argnames:
+            anames=argnames.split(",")
+            startArgs=1 if not optArgVals else 2
+            for i,nm in enumerate(anames,start=startArgs):
+                label+="{{{0}}}".format(nm)
+                #Snippet syntax ${1:PLACEHOLDER}
+                content+="{{${{{0}:{1}}}}}".format(i,nm)
+        elif numArgs and int(numArgs)>0:
+            numReqArgs=int(numArgs)
+            if optArgVals:
+                numReqArgs-=1
+            label+="({0})".format(numReqArgs)
+            for i in range(1,numReqArgs+1):
+                content+="{{${0}}}".format(i)
+        if description:
+            label+="\t{0}".format(description)
+    
+        content=content[1:]
+        label=label[1:]
+        return (label,content)
+    def parse_let_match(self,hits):
+        result=[]
+        for m in hits:
+            alias=m[0]
+            aliased=m[1]
+            result.append(self.format_command(alias, False, False, False, "Alias of {0}".format(aliased)))
         return result
-
+    def parse_def_match(self,hits):
+        result=[]
+        for m in hits:
+            commandName=m[0]
+            optArgVarNum=m[1]
+            reqArgVarNum=m[2]
+            numArgs=len(optArgVarNum+reqArgVarNum)
+            optArgVals=''
+            argnames=m[3]
+            description=m[4]
+            result.append(self.format_command(commandName, numArgs, optArgVals, argnames, description))
+        return result
+    def parse_newcommand_match(self, hits):
+        result=[]
+        for m in hits:
+            commandName=m[0]
+            numArgs=m[1]
+            optArgVals=m[2]
+            argnames=m[3]
+            description=m[4]
+            result.append(self.format_command(commandName, numArgs, optArgVals, argnames, description))
+        return result
 
     def autocomplete_newcommand(self, view, prefix, locations, file_name):
         file_path=False
@@ -83,56 +137,27 @@ class ShortsCompletions(sublime_plugin.EventListener):
         src_content = src_file.read()#re.sub("%.*","",src_file.read())
         # src_content = re.sub("^%.*","",src_file.read())
         src_file.close()
-
-        ## WORKING: ##
-        # newcommands=re.findall(r"\\newcommand{(.*?)}(?:\[\])?(?:{([^}]+)})?.*", src_content)
-        ## NEW ##
-        # r"\\newcommand{(.*?)}(?:\[([0-9])\])?(?:{([^}]+)})?.*}(%%\([a-zA-Z0-9,]+\)%%)?"
         # Format ish:
         # \newcommand{(|STRINGAZ|)}[|NUMARGS|][|optArgs|]{dostuff}%%(|argname,argname|)%%%DESCRIPTION%
-        #                  0            1        2           3                4             5
-        # lcontent=src_content.split("\n")
-
-        ## WorkingBackup
-        # r"\\newcommand{(.*?)}(?:\[([0-9])\])?(?:\[(.*?)\])?(?:{([^}]+)})?.*}(?:%%\(([a-zA-Z0-9,]+)\)%%)?(?:%([^%]+)%)?"
-        #^(?:%%)?\\newcommand{(.*?)}(?:\[([0-9])\])?(?:\[(.*?)\])?(?:%%\(([a-zA-Z0-9,]+)\)%%)?(?:%([^%]+)%)?$
+        #                  0            1        2                           3              4
+        # \def\COMMAND[#1]#2{\whatevah}%%(|argname,argname|)%%%DESCRIPTION%
+        #        0      1  2                    3               4
+        # \let\COMMAND = \command
+        #       0      =   1
+        docstring_regx=r"(?:%%\(([a-zA-Z0-9,]+)\)%%)?(?:%([^%]+)%)?"
         
-        newcommands=re.findall(r"^(?:%%)?\\newcommand{([^}]+)}(?:\[([0-9])\])?(?:\[(.*?)\])?[^%\n]+(?:%%\(([a-zA-Z0-9,]+)\)%%)?(?:%([^%]+)%)?$", src_content, flags=re.M)
+        defMatch=re.findall(r"^\\def(\\[a-zA-Z_]+)(?:\[#([0-9])\])?(?:#([0-9]))?[^%\n]+"+docstring_regx+r"$",src_content, flags=re.M)
+        letMatch=re.findall(r"^\\let(\\[a-zA-Z_]+)\s?=\s?(?:\{)?([^\}\n]+)",src_content, flags=re.M)
 
-        for m in newcommands:
-            commandName=m[0]
-            numArgs=m[1]
-            optArgVals=m[2]
-            # body=m[3]
-            argnames=m[3]
-            description=m[4]
-            if (len(m) > 1):
-                label=commandName
-                content=commandName
-                if optArgVals:
-                    label+="[{0}]".format(optArgVals)
-                    content+="[{0}]".format(optArgVals)
-                if argnames:
-                    anames=argnames.split(",")
-                    for i,nm in enumerate(anames,start=1):
-                        label+="{{{0}}}".format(nm)
-                        #Snippet syntax ${1:PLACEHOLDER}
-                        content+="{{${{{0}:{1}}}}}".format(i,nm)
-                elif numArgs and int(numArgs)>0:
-                    numReqArgs=int(numArgs)
-                    if optArgVals:
-                        numReqArgs-=1
-                    label+="({0})".format(numReqArgs)
+        newcommandMatch=re.findall(r"^(?:%%)?\\(?:re)?newcommand{([^}]+)}(?:\[([0-9])\])?(?:\[(.*?)\])?[^%\n]+"+docstring_regx+r"$", src_content, flags=re.M)
+        result+=self.parse_newcommand_match(newcommandMatch)
+        result+=self.parse_def_match(defMatch)
+        result+=self.parse_let_match(letMatch)
+            
 
-                    for i in range(1,numReqArgs+1):
-                        content+="{{${0}}}".format(i)
-                if description:
-                    label+="\t{0}".format(description)
-            else:
-                content=label=m[0]
-            content=content[1:]
-            label=label[1:]
-            result.append((label, content))
+        # foundCommands.append(re.findall(r"^(?:%%)?\\newcommand{([^}]+)}(?:\[([0-9])\])?(?:\[(.*?)\])?[^%\n]+(?:%%\(([a-zA-Z0-9,]+)\)%%)?(?:%([^%]+)%)?$", src_content, flags=re.M))
+        
+            
         return result
 
     def on_query_context(self,view, key, operator, operand, match_all):
