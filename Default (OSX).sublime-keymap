@@ -143,6 +143,7 @@ LaTeX Package keymap for OS X
             "operand": "\\\\cite([a-zX*]*?)(\\[.*?\\]){0,2}\\{(?:[^{},]*,)*[^{},]+$",
             "match_all": true
         }],
+
         "command": "latex_ref_cite",
         "args": {
             "insert_char": ","
@@ -659,6 +660,27 @@ LaTeX Package keymap for OS X
     // shift+super+{up,down} for super/subscripts with braces
     // (courtesy of Tobias Schmidt; I only changed the keybindings)
     {
+        "keys": ["ctrl+-"],
+        "command": "insert_snippet",
+        "args": {
+            "contents": "_{$1}$0"
+        },
+        "context": [{
+            "key": "selector",
+            "operator": "equal",
+            "operand": "text.tex.latex string.other.math"
+        }, {
+            "key": "setting.auto_match_enabled",
+            "operator": "equal",
+            "operand": true
+        }, {
+            "key": "selection_empty",
+            "operator": "equal",
+            "operand": true,
+            "match_all": true
+        }]
+    },
+    {
         "keys": ["shift+super+down"],
         "command": "insert_snippet",
         "args": {
@@ -680,6 +702,27 @@ LaTeX Package keymap for OS X
         }]
     }, {
         "keys": ["shift+super+up"],
+        "command": "insert_snippet",
+        "args": {
+            "contents": "^{$1}$0"
+        },
+        "context": [{
+            "key": "selector",
+            "operator": "equal",
+            "operand": "text.tex.latex string.other.math"
+        }, {
+            "key": "setting.auto_match_enabled",
+            "operator": "equal",
+            "operand": true
+        }, {
+            "key": "selection_empty",
+            "operator": "equal",
+            "operand": true,
+            "match_all": true
+        }]
+    },
+    {
+        "keys": ["ctrl+6"],
         "command": "insert_snippet",
         "args": {
             "contents": "^{$1}$0"

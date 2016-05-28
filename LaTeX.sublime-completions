@@ -16,7 +16,7 @@
                 { "trigger": "use", "contents": "\\usepackage"},
         
                 { "trigger": "beq", "contents": "\\[\n$0\n\\]"},               
-                { "trigger": "beqn", "contents": "\\begin{equation}\n$0\n\\end{equation}\n"},
+                { "trigger": "beqn", "contents": "\\begin{equation}\\label{eq:$1}\n$0\n\\end{equation}\n"},
                 { "trigger": "bga", "contents": "\\begin{gather*}\n$0\n\\end{gather*}\n"},
                 { "trigger": "bgan", "contents": "\\begin{gather}\n$0\n\\end{gather}\n"},                
                 { "trigger": "bal", "contents": "\\begin{align*}\n$0\n\\end{align*}\n"},
