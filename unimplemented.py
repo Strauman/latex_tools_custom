@@ -44,11 +44,19 @@ class BaconUnimplementedBase(sublime_plugin.WindowCommand):
 
 	def show_list(self):
 		self.awaits_files=[]
+		self.missing=[]
 		for rf in self.root_files:
-			self.searchFileForAwaits(rf)
+			files=[]
+			if rf.isnumeric():
+				files=self.searchFileForAwaits(rf)
+				self.awaits_files+=(files)
+				for f in files:
+					if f not in self.input_files:
+						self.missing.append("Page {pagefile}: {awaitname}.tex".format(awaitname=f, pagefile=rf))
+			
 
 		self.unimplemented=list(set(self.input_files)-set(self.awaits_files))
-		self.missing=list(set(self.awaits_files)-set(self.input_files))
+		# self.missing=list(set(self.awaits_files)-set(self.input_files))
 
 		if (self.mode=="unimplemented"):
 			diff=list(set(self.unimplemented))
@@ -59,11 +67,13 @@ class BaconUnimplementedBase(sublime_plugin.WindowCommand):
 			for i in sorted(set(diff)):
 				awaits_code+="\\awaits{"+i+"}\n"
 			sublime.set_clipboard(awaits_code)
-
+		elif self.mode=="missing":
+			self.window.show_quick_panel(sorted(set(self.missing)), self.passby)
 		else:
 			return
 		
-
+	def passby(self, index):
+		pass
 	def setChosenToClipboard(self, index):
 		if index==-1:
 			return
@@ -74,12 +84,13 @@ class BaconUnimplementedBase(sublime_plugin.WindowCommand):
 		sublime.set_clipboard(awaits_code)
 
 	def searchFileForAwaits(self, file):
-		awaitsfiles=[]
+		files=[]
 		file_contents=open(path.join(self.topfolder, self.rootfiles_dirname, file)+".tex", 'r').read()
 		for awaits in re.findall(r"\\awaits{([^}]+)}", file_contents):
 			if awaits.endswith('.tex'):
 				awaits=self.rreplace(awaits, '.tex', '')
-			self.awaits_files.append(awaits)
+			files.append(awaits)
+		return files
 
 	def get_tex_files(self, searchdir, extension="tex"):
 		files=[]
