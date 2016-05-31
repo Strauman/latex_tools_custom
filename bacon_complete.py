@@ -5,7 +5,7 @@ import re
 import codecs
 
 # COMMANDS_FILE="/lib/shorts.tex"
-COMMANDS_FILES=["/rapport/commands.tex", "~/Documents/LaTeX/preamble/commands.tex","/commands.tex", "/lib/shorts.tex", "/lob/remap.tex", "/lib/commands.tex"]
+COMMANDS_FILES=["/rapport/commands.tex", "~/Documents/LaTeX/preamble/commands.tex","/commands.tex", "/lib/shorts.tex", "/lib/remap.tex", "/lib/commands.tex"]
 # COMMANDS_FILE="/commands.tex"
 # class LatexCompleteCommand(sublime_plugin.TextCommand):
 #     def run
@@ -64,11 +64,13 @@ class ShortsCompletions(sublime_plugin.EventListener):
                 result.append((label, content))
             return result
     def format_command(self, commandName, numArgs, optArgVals, argnames, description):
-        label=commandName
-        content=commandName
+        label=""
+        content=""
+        optContent=""
+        optLabel=""
         if optArgVals:
-            label+="[{0}]".format(optArgVals)
-            content+="[${{1:{0}}}]".format(optArgVals)
+            optLabel+="[{0}]".format(optArgVals)
+            optContent+="[${{1:{0}}}]".format(optArgVals)
         if argnames:
             anames=argnames.split(",")
             startArgs=1 if not optArgVals else 2
@@ -85,16 +87,19 @@ class ShortsCompletions(sublime_plugin.EventListener):
                 content+="{{${0}}}".format(i)
         if description:
             label+="\t{0}".format(description)
-    
-        content=content[1:]
-        label=label[1:]
-        return (label,content)
+        cmd=commandName[1:]
+        # content=content[1:]
+        # label=label[1:]
+        ret=[(cmd+label,cmd+content)]
+        if len(optContent) > 0 or len(optLabel) > 0:
+            ret.append((cmd+optLabel+label,cmd+optContent+content))
+        return ret
     def parse_let_match(self,hits):
         result=[]
         for m in hits:
             alias=m[0]
             aliased=m[1]
-            result.append(self.format_command(alias, False, False, False, "Alias of {0}".format(aliased)))
+            result+=self.format_command(alias, False, False, False, "Alias of {0}".format(aliased))
         return result
     def parse_def_match(self,hits):
         result=[]
@@ -106,7 +111,7 @@ class ShortsCompletions(sublime_plugin.EventListener):
             optArgVals=''
             argnames=m[3]
             description=m[4]
-            result.append(self.format_command(commandName, numArgs, optArgVals, argnames, description))
+            result+=self.format_command(commandName, numArgs, optArgVals, argnames, description)
         return result
     def parse_newcommand_match(self, hits):
         result=[]
@@ -116,7 +121,7 @@ class ShortsCompletions(sublime_plugin.EventListener):
             optArgVals=m[2]
             argnames=m[3]
             description=m[4]
-            result.append(self.format_command(commandName, numArgs, optArgVals, argnames, description))
+            result+=self.format_command(commandName, numArgs, optArgVals, argnames, description)
         return result
 
     def autocomplete_newcommand(self, view, prefix, locations, file_name):
@@ -146,8 +151,8 @@ class ShortsCompletions(sublime_plugin.EventListener):
         #       0      =   1
         docstring_regx=r"(?:%%\(([a-zA-Z0-9,]+)\)%%)?(?:%([^%]+)%)?"
         
-        defMatch=re.findall(r"^\\def(\\[a-zA-Z_]+)(?:\[#([0-9])\])?(?:#([0-9]))?[^%\n]+"+docstring_regx+r"$",src_content, flags=re.M)
-        letMatch=re.findall(r"^\\let(\\[a-zA-Z_]+)\s?=\s?(?:\{)?([^\}\n]+)",src_content, flags=re.M)
+        defMatch=re.findall(r"^(?:%%)?\\def(\\[a-zA-Z_]+)(?:\[#([0-9])\])?(?:#([0-9]))?[^%\n]+"+docstring_regx+r"$",src_content, flags=re.M)
+        letMatch=re.findall(r"^(?:%%)?\\let(\\[a-zA-Z_]+)\s?=\s?(?:\{)?([^\}\n]+)",src_content, flags=re.M)
 
         newcommandMatch=re.findall(r"^(?:%%)?\\(?:re)?newcommand{([^}]+)}(?:\[([0-9])\])?(?:\[(.*?)\])?[^%\n]+"+docstring_regx+r"$", src_content, flags=re.M)
         result+=self.parse_newcommand_match(newcommandMatch)
