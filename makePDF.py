@@ -193,11 +193,13 @@ class CmdThread ( threading.Thread ):
 		# 	file=open(self.caller.tex_base + ".log", 'w+')
 		out_dir=self.caller.builder.out_dir
 		view=self.caller.view
+
 		tex_base=self.caller.tex_base
 		# tex_root=getTeXRoot.get_tex_root(view)
 		# tex_dir=os.path.dirname(view)
 		
-		if (self.caller.builder.output_settings.get("auto_clean", True)):
+		print("ac:"+str(self.caller.view_auto_delete))
+		if (self.caller.builder.output_settings.get("auto_clean", True) and self.caller.view_auto_delete):
 			# clcmd=DEFAULT_CLEAN_COMMAND[:]
 			for tmproot, dirs, files in os.walk(out_dir):
 				for currentFile in files:
@@ -256,8 +258,8 @@ class make_pdfCommand(sublime_plugin.WindowCommand):
 		# im.show()
 		# sublime.status_message("Starting build")
 		self.live=live
-		print("LIVE:")
-		print(live)
+		# print("LIVE:")
+		# print(live)
 		self.window.active_view().set_status("texbuild", "Building...")
 		# Try to handle killing
 		if hasattr(self, 'proc') and self.proc: # if we are running, try to kill running process
@@ -270,6 +272,12 @@ class make_pdfCommand(sublime_plugin.WindowCommand):
 		
 		view = self.window.active_view()
 		self.view=view
+		self.view_auto_delete=view.settings().get("auto_clean")
+		print("ac1:"+str(self.view_auto_delete))
+		if(not self.view_auto_delete):
+			self.window.active_view().set_status("auto_del", "Not deleting tmp files")
+		else:
+			self.window.active_view().erase_status("auto_del")
 		self.file_name = getTeXRoot.get_tex_root(view)
 		if not os.path.isfile(self.file_name): 
 			sublime.error_message(self.file_name + ": file not found.")

@@ -5,7 +5,9 @@ import re
 import codecs
 
 # COMMANDS_FILE="/lib/shorts.tex"
-COMMANDS_FILES=["/rapport/commands.tex", "~/Documents/LaTeX/preamble/commands.tex","/commands.tex", "/lib/shorts.tex", "/lib/remap.tex", "/lib/commands.tex"]
+# COMMANDS_FILES=["~/Documents/uit/DefaultReport/rapport/commands.tex","/rapport/commands.tex","~/Documents/LaTeX/preamble/commands.tex","/commands.tex", "/lib/shorts.tex", "/lib/remap.tex", "/lib/commands.tex"]
+COMMANDS_FILES=[u'/Users/Andreas/Documents/uit/DefaultReport/rapport/commands.tex',u'~/Documents/uit/DefaultReport/rapport/commands.tex',"/rapport/commands.tex", "/lib/shorts.tex", "/lib/remap.tex", "/lib/commands.tex"]
+
 # COMMANDS_FILE="/commands.tex"
 # class LatexCompleteCommand(sublime_plugin.TextCommand):
 #     def run
@@ -129,9 +131,13 @@ class ShortsCompletions(sublime_plugin.EventListener):
         result=[]
 
         # print "p:", prefix
-        for folder in sublime.active_window().folders():
-            if (os.path.isfile(folder+file_name)):
-                file_path=folder+file_name
+        if file_name.startswith(u'/Users'):
+            if(os.path.isfile(file_name)):
+                file_path=file_name
+        else:
+            for folder in sublime.active_window().folders():
+                if (os.path.isfile(folder+file_name)):
+                    file_path=folder+file_name
         if(not file_path):
             return []
         try:

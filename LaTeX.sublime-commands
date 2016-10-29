@@ -1,5 +1,6 @@
 [
 	{ "caption": "BaconTools: Delete temporary files", "command": "delete_temp_files"},
+	{ "caption": "BaconTools: Toggle autodelete temporary files", "command": "toggle_setting","args":{"setting": "auto_clean"}},
 	{ "caption": "BaconTools: View PDF", "command": "view_pdf"},
 	{ "caption": "BaconTools: Jump to PDF", "command": "jump_to_tools_pdf"},
 	{ "caption": "BaconTools: Toggle focus (PDF/editor)", "command": "toggle_focus"},
