@@ -8,6 +8,7 @@ class BaconUnimplementedBase(sublime_plugin.WindowCommand):
 		self.input_dirname="inputs"
 		self.rootfiles_dirname="pages"
 		self.topfolder=""
+		self.quicklist=[]
 		self.mode=False
 
 	def beforeRun(self):
@@ -60,6 +61,7 @@ class BaconUnimplementedBase(sublime_plugin.WindowCommand):
 
 		if (self.mode=="unimplemented"):
 			diff=list(set(self.unimplemented))
+			self.quicklist=self.unimplemented
 			self.window.show_quick_panel(sorted(set(diff)), self.setChosenToClipboard)
 		elif self.mode=="all":
 			diff=list(set(self.unimplemented))
@@ -68,7 +70,8 @@ class BaconUnimplementedBase(sublime_plugin.WindowCommand):
 				awaits_code+="\\awaits{"+i+"}\n"
 			sublime.set_clipboard(awaits_code)
 		elif self.mode=="missing":
-			self.window.show_quick_panel(sorted(set(self.missing)), self.passby)
+			self.quicklist=self.missing
+			self.window.show_quick_panel(sorted(set(self.missing)), self.setChosenToClipboard)
 		else:
 			return
 		
@@ -78,8 +81,8 @@ class BaconUnimplementedBase(sublime_plugin.WindowCommand):
 		if index==-1:
 			return
 		
-		unimp=sorted(set(self.unimplemented))
-		awaits_code="\\awaits{"+unimp[index]+"}"
+		unimp=sorted(set(self.quicklist))
+		awaits_code="\\awaits{"+unimp[index][8:]+"}"
 		# self.insert_on_sel(awaits_code)
 		sublime.set_clipboard(awaits_code)
 
