@@ -82,7 +82,7 @@ class BaconUnimplementedBase(sublime_plugin.WindowCommand):
 			return
 		
 		unimp=sorted(set(self.quicklist))
-		awaits_code="\\awaits{"+unimp[index][8:]+"}"
+		awaits_code=unimp[index][8:]
 		# self.insert_on_sel(awaits_code)
 		sublime.set_clipboard(awaits_code)
 
